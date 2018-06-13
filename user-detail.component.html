@@ -1,0 +1,146 @@
+<div class="card animated fadeInUp">
+	<div class="card-body">
+	  <h4 class="card-title" *ngIf="isNew">Add New User</h4>
+	  <h4 class="card-title" *ngIf="!isNew">Edit User Detail</h4>
+	  <div class="card-center-block">
+	  		<hr>
+	  		<form class="form-sample" #userForm='ngForm' (ngSubmit)='submitForm(userForm)'> 
+	  			
+	  			<div class="form-group row">
+					<label class="col-sm-5 col-form-label">Profile Picture</label>
+					<div class="col-sm-7">
+						<div class="profile-img">
+							<img [src]="imageData ? imageData : (user.photo ? user.photo : 'assets/images/no-image.jpg')" alt="" class="center-block"> 
+							<div class="upload-file">
+								<label>
+									<input class='file-input' type="file" name="profile_photo" accept="image/*" (change)="fileChangeEvent($event,template)" id="profile" class="hide-style">
+								</label>
+								<a href="#" (click)="openfile($event)"><i class="fa fa-camera" aria-hidden="true"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+	  			<!-- <div class="form-group row">
+		          <label class="col-sm-5 col-form-label">Profile Picture</label>
+		          <div class="col-sm-7">
+		          	<div class="profile-img">
+						<img [src]="imageData ? imageData : (user.photo ? user.photo : 'assets/images/no-image.jpg')" alt="" class="center-block"> 
+						<div class="upload-file">
+							<label>
+								<input class='file-input' type="file" name="profile_photo" accept="image/*" (change)="previewImage($event)" >
+							</label>
+						</div>
+					</div>
+					
+		          </div>
+		        </div> -->
+
+	  			<div class="form-group row">
+		          <label class="col-sm-5 col-form-label">First Name</label>
+		          <div class="col-sm-7">
+		           <input class='form-control' type="text" name="firstname" [(ngModel)]="user.firstname" placeholder="Enter First Name" id="firstname" required #firstname="ngModel"/>
+					<div class="error-block" *ngIf="((submitted || firstname.touched) && firstname.invalid)">
+						{{showError('firstname', firstname.errors)}}
+					</div>
+		          </div>
+		        </div>
+		        <div class="form-group row">
+		          <label class="col-sm-5 col-form-label">Last Name</label>
+		          <div class="col-sm-7">
+		           <input class='form-control' type="text" name="lastname" [(ngModel)]="user.lastname" placeholder="Enter Last Name" id="lastname" required #lastname="ngModel"/>
+					<div class="error-block" *ngIf="((submitted || lastname.touched) && lastname.invalid)">
+						{{showError('lastname', lastname.errors)}}
+					</div>
+		          </div>
+		        </div>
+
+		        <div class="form-group row">
+		          <label class="col-sm-5 col-form-label">Email</label>
+		          <div class="col-sm-7">
+		           <input class='form-control' (keydown)="RestrictSpace($event)" type="text" name="email" pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" [(ngModel)]="user.email" placeholder="Enter email" id="email" required #email="ngModel" [disabled]="!isNew" />
+					<div class="error-block" *ngIf="((submitted || email.touched) && email.invalid)">
+						{{showError('email', email.errors)}}
+					</div>
+		          </div>
+		        </div>
+
+		        <div class="form-group row" *ngIf="isNew">
+		          <label class="col-sm-5 col-form-label">Password</label>
+		          <div class="col-sm-7">
+		           <input class='form-control' type="password" name="password" [(ngModel)]="user.password" placeholder="Enter password" id="password" required #password="ngModel"/>
+					<div class="error-block" *ngIf="((submitted || password.touched) && password.invalid)">
+									{{showError('password', password.errors)}}
+								</div>
+		          </div>
+		        </div>
+
+		        
+		       	<div class="form-group row">
+		          <label class="col-sm-5 col-form-label">Mobile No.</label>
+		          <div class="col-sm-7">
+		           <input class='form-control' (keydown)="AllowNumbers($event)" minlength="10" maxlength="10" type="text" name="mobile" [(ngModel)]="user.mobile" placeholder="Enter Mobile No." id="mobile" required #mobile="ngModel"/>
+					<div class="error-block" *ngIf="((submitted || mobile.touched) && mobile.invalid)">
+						{{showError('mobile', mobile.errors)}}
+					</div>
+		          </div>
+		        </div>
+
+		        <div class="form-group row">
+		          <label class="col-sm-5 col-form-label">Company Name</label>
+		          <div class="col-sm-7">
+		           <input class='form-control' type="text" name="company_name" [(ngModel)]="user.company_name" placeholder="Enter Last Name" id="company_name" required #company_name="ngModel"/>
+					<div class="error-block" *ngIf="((submitted || company_name.touched) && company_name.invalid)">
+						{{showError('company_name', company_name.errors)}}
+					</div>
+		          </div>
+		        </div>
+
+		        <div class="form-group row">
+		          <label class="col-sm-5 col-form-label">Role</label>
+		          <div class="col-sm-7">
+		           <!-- <input class='form-control' type="text" name="secondary_role" [(ngModel)]="user.secondary_role" placeholder="Enter Last Name" id="secondary_role" required #secondary_role="ngModel"/> -->
+		           <ng-select (change)="rangeChanged($event)" [items]="roleList"
+	                     bindLabel="name"
+	                     bindValue="id"
+	                     name="secondary_role"
+	                     #company="ngModel"
+	                     required
+	                     placeholder="Select"
+	                     [(ngModel)]="secondary_role"
+	                     [clearable]='false'
+	                     [searchable]='false'
+	                     [dropdownPosition]="'auto'"
+			          >
+			          </ng-select>
+					<div class="error-block" *ngIf="((submitted || secondary_role.touched) && secondary_role.invalid)">
+						{{showError('secondary_role', secondary_role.errors)}}
+					</div>
+		          </div>
+		        </div>
+
+		        <div class="form-group row">
+		          <label class="col-sm-5 col-form-label">Address</label>
+		          <div class="col-sm-7">
+		           <input class='form-control' type="text" name="address" [(ngModel)]="user.address" placeholder="Enter Last Name" id="address" required #address="ngModel"/>
+					<div class="error-block" *ngIf="((submitted || address.touched) && address.invalid)">
+						{{showError('address', address.errors)}}
+					</div>
+		          </div>
+		        </div>
+		        
+		        <hr>
+
+		        <div class="form-group row">
+		        	<div class="button-group-container">
+		        		<button type="submit" class="btn btn-primary">
+		        			<span *ngIf='showLoader'><i class="fa fa-spinner fa-spin"></i> Loading</span>
+		        			<span *ngIf='!showLoader'>Submit</span>
+		        		</button>
+		        		<button type="button" class="btn btn-warning" [routerLink]="['/main/users']">Cancel</button>
+		        	</div>
+		        </div>
+		  	</form>
+	  </div>
+	</div>
+</div>
